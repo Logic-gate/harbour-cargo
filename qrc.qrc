@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/images/harbour-cargo-big.png</file>
+        <file>res/images/harbour-cargo-cover.png</file>
+    </qresource>
+</RCC>
