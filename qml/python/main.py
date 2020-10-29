@@ -47,6 +47,7 @@ class Operations:
         self.download_path = header.DOWNLOAD_PATH
         self.defualt_config = header.DEFAULT_CONFIG
         self.service_search_fields = header.SERVICE_SEARCH_FIELDS
+        self.google_mime_types_convert = header.GOOGLE_MIME_TYPES_CONVERT
 
     def pathChecks(self, path):
 
@@ -298,15 +299,16 @@ class Operations:
         mimeTypeFromGoogle = file['mimeType']
         print(mimeTypeFromGoogle)
 
-        if self.checkMimiTypeMedia(id):
-            print('found media')
-            fileFormat = '' #mimeTypeFromGoogle.split('/')[1]
-            request = self.service.files().get_media(fileId=id)
-        else:
+        
+        if mimeTypeFromGoogle in self.google_mime_types_convert:
             downloadMimeType, fileFormat= self.commonMimeType(mimeTypeFromGoogle)
             print('found file')
             request = self.service.files().export_media(fileId=id,
                                              mimeType=downloadMimeType)
+        else:
+            fileFormat = '' #mimeTypeFromGoogle.split('/')[1]
+            request = self.service.files().get_media(fileId=id)
+
         fh = io.BytesIO()
         downloader = MediaIoBaseDownload(fh, request)
         done = False
@@ -324,19 +326,11 @@ class Operations:
 
     def commonMimeType(self, mimeType):
         #I am sure there is a lib for this, until then...manual!
-        GOOGLE_MIME_TYPES_CONVERT = header.GOOGLE_MIME_TYPES_CONVERT
+        
         try:
-            return GOOGLE_MIME_TYPES_CONVERT[mimeType]
+            return self.google_mime_types_convert[mimeType]
         except:
             return (mimeType, mimeType.split('/')[1])
-
-    def checkMimiTypeMedia(self, id):
-        #I am sure there is a lib for this, until then...manual!
-        getInfo = self.getFileService(id)
-        splitFormat = getInfo['mimeType'].split('/')[1]
-        DOWNLOAD_TYPES = header.DOWNLOAD_TYPES
-        if splitFormat in DOWNLOAD_TYPES:
-            return True
 
     def isAscii(self, string):
         # Very lazy and very wrong. Should add proper unicode support. --> Todo!

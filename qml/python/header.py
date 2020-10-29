@@ -20,7 +20,7 @@ SCOPES = [
     ]
 
 
-SERVICE_SEARCH_FIELDS = "nextPageToken, files(id, name, mimeType, description, size, modifiedTime, createdTime, webViewLink, iconLink, hasThumbnail, thumbnailLink)"
+SERVICE_SEARCH_FIELDS = "nextPageToken, files(*)"
 
 
 GOOGLE_MIME_TYPES_CONVERT = {'application/vnd.google-apps.spreadsheet': 
@@ -30,11 +30,3 @@ GOOGLE_MIME_TYPES_CONVERT = {'application/vnd.google-apps.spreadsheet':
         'application/vnd.google-apps.presentation':
             ('application/pdf', '.pdf')
         }
-
-DOWNLOAD_TYPES = {'mp4', 'mp3', 'pdf', 'jpg',
-              'jpeg', 'png', 'xml', 'json',
-               'x-redhat-package-manager', 'plain', 'gif', 'vnd.ms-excel',
-               'vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xml',
-               'zip', 'x-7z-compressed', 'csv', 'bin', 'gz', 'svg+xml', 'aac', 'html', 'x-tar'
-               'tiff', 'ttf', 'wav', 'x-sh', 'vnd.rar'
-               }

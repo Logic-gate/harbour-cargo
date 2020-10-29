@@ -254,6 +254,7 @@ Page {
                 }
             }
 
+
             onClicked: Functions.dir(
                            model.mimeType) ? Functions.pushPageDir(100,
                                                                    "'" + model.id + "' in parents", model.name) : Functions.pushPageFile(
@@ -262,7 +263,11 @@ Page {
                                                  model.modifiedTime, model.mimeType,
                                                  model.createdTime, model.webViewLink,
                                                  model.iconLink, model.hasThumbnail,
-                                                 model.thumbnailLink)
+                                                 model.thumbnailLink,
+                                                 model.shared,
+                                                 model.sharedWithMeTime,
+                                                 model.ownedByMe)
+
             menu: ContextMenu {
                 MenuItem {
                     text: qsTr('Download')

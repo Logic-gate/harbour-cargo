@@ -1,6 +1,5 @@
 
 
-
     function retinaIconLink(sourceObject, searchValue, newValue){
         return sourceObject.replace(searchValue, newValue)
     }
@@ -34,12 +33,20 @@
     }
 
     //fileThumbnailLink is actuall contentHints
-    function pushPageFile(fileId, fileName, fileDescription, fileSize, fileModifiedTime, fileMimeType, fileCreatedTime, fileWebViewLink, fileIconLink, fileHasThumbnail, fileThumbnailLink){
+    function pushPageFile(fileId, fileName,
+                          fileDescription, fileSize,
+                          fileModifiedTime, fileMimeType,
+                          fileCreatedTime, fileWebViewLink,
+                          fileIconLink, fileHasThumbnail,
+                          fileThumbnailLink, fileShared,
+                          fileSharedWithMeTime, fileOwnedByMe){
         pageStack.push('../pages/InfoPage.qml', {fileId: fileId, fileName: fileName,
                                          fileDescription: fileDescription, fileSize: fileSize,
                                         fileModifiedTime: fileModifiedTime, fileMimeType: fileMimeType,
                                         fileCreatedTime: fileCreatedTime, fileWebViewLink: fileWebViewLink,
                                         fileIconLink: fileIconLink, fileHasThumbnail: fileHasThumbnail,
-                                        fileThumbnailLink: fileThumbnailLink})
+                                        fileThumbnailLink: fileThumbnailLink, fileShared: fileShared,
+                                        fileSharedWithMeTime: fileSharedWithMeTime, fileOwnedByMe: fileOwnedByMe})
+
 
     }

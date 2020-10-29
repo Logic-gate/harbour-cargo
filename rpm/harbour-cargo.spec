@@ -14,7 +14,7 @@ Name:       harbour-cargo
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    A Google Drive Client
 Version:    1.0
-Release:    1
+Release:    2
 Group:      Qt/Qt
 License:    LICENSE
 URL:        https://github.com/Logic-gate/harbour-cargo

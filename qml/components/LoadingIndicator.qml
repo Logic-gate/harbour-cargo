@@ -40,7 +40,7 @@ Item {
 
         InfoLabel {
             id: loadingLabel
-            text: qsTr("Loading...")
+            text: qsTr("Loading")
         }
 
         BusyIndicator {

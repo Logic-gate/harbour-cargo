@@ -28,6 +28,9 @@ Page {
     property var fileHasThumbnail
     //this will show true for google docs.
     property var fileThumbnailLink
+    property var fileShared
+    property var fileSharedWithMeTime
+    property var fileOwnedByMe
 
     function fixGoogleDocsNoThumbnails(fileThumbnailLink) {
 
@@ -119,6 +122,11 @@ Page {
                     value: fileDescription ? fileDescription : _fileDescription.visible = false
                 }
                 DetailItem {
+                    id: _fileOwnedByMe
+                    label: qsTr("Owner")
+                    value: fileOwnedByMe ? qsTr("Yes") : _fileOwnedByMe.visible = false
+                }
+                DetailItem {
                     id: _fileModifiedTime
                     label: qsTr("Last Modified")
                     value: fileModifiedTime ? fileModifiedTime : _fileModifiedTime.visible = false
@@ -127,6 +135,16 @@ Page {
                     id: _fileCreatedTime
                     label: qsTr("Created On")
                     value: fileCreatedTime ? fileCreatedTime : _fileCreatedTime.visible = false
+                }
+                DetailItem {
+                    id: _fileShared
+                    label: qsTr("Shared")
+                    value: fileShared ? qsTr("Yes") : _fileShared.visible = false
+                }
+                DetailItem {
+                    id: _fileSharedWithMeTime
+                    label: qsTr("Shared with me")
+                    value: fileSharedWithMeTime ? fileSharedWithMeTime : _fileSharedWithMeTime.visible = false
                 }
             }
         }
