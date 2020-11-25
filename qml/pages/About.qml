@@ -73,6 +73,19 @@ Page {
             }
 
             SectionHeader {
+                text: qsTr("Contributors")
+            }
+
+            Label {
+                text: qsTr("Attah")
+                font.pixelSize: Theme.fontSizeExtraSmall
+                anchors.horizontalCenter: parent.horizontalCenter
+                wrapMode: Text.WordWrap
+                width: parent.width - Theme.paddingLarge * 2
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            SectionHeader {
                 text: qsTr("Links")
             }
 
