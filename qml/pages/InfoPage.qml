@@ -31,6 +31,12 @@ Page {
     property var fileShared
     property var fileSharedWithMeTime
     property var fileOwnedByMe
+    property var md5Checksum
+
+    property bool downloadCondition
+    property var filePath
+    property bool fileExistsStep
+    property bool exportOrDownload
 
     function fixGoogleDocsNoThumbnails(fileThumbnailLink) {
 
@@ -48,6 +54,17 @@ Page {
         }
     }
 
+    function exportOrDownloadStr() {
+
+        if (['application/vnd.google-apps.spreadsheet',
+            'application/vnd.google-apps.document',
+            'application/vnd.google-apps.presentation'].indexOf(fileMimeType) >= 0) {
+            exportOrDownload = true;
+        }
+
+
+    }
+
     SilicaFlickable {
         id: flickable
         anchors.fill: parent
@@ -56,21 +73,81 @@ Page {
             flickable: flickable
         }
 
+        Component.onCompleted: {
+        exportOrDownloadStr();
+        }
+
         PullDownMenu {
             MenuItem {
-                text: qsTr("Download")
+                /*
+                This is the same as download, the only diff is that for Google mimetypes
+                it will export the document to a standard form, this should have a condition
+                for switching between download and export depending on mimetype; exportOrDownload just
+                changes the string; once moved to python, it can act as a true export or download function.
+                We can export google docs to docx or pdf for example.
+                */
+                text: exportOrDownload ? qsTr("Export") : qsTr("Download")
                 onClicked: {
-                    py.download(fileId)
+                    py.download(fileId, md5Checksum)
                 }
             }
 
             MenuItem {
-                text: qsTr("Open")
+                text: qsTr("Open in Browser")
                 onClicked: {
                     console.log(fileWebViewLink)
                     Qt.openUrlExternally(fileWebViewLink)
                 }
             }
+
+            MenuItem {
+                text: qsTr("Share")
+                visible: fileExistsStep && md5Checksum ? true : false
+                onClicked: {
+                        pageStack.animatorPush("Sailfish.TransferEngine.SharePage",
+                                {
+                                "source": filePath,
+                                "mimeType": fileMimeType
+                                 })
+                    }
+            }
+        }
+
+        PushUpMenu {
+            id: pushUpMenuInfoPage
+            visible: md5Checksum && fileMimeType === 'application/pdf' ? true : false
+            MenuItem {
+                id: openInOffice
+                text: fileExistsStep ? qsTr("Open") : qsTr("Download")
+                onClicked: {
+                    if (fileExistsStep){
+                        switch(fileMimeType) {
+                            /*
+                            This will allow us to open pdf files from cargo
+                            */
+                        case "application/pdf":
+                            pageStack.animatorPush("Sailfish.Office.PDFDocumentPage",
+                                                   { title: fileName, source: filePath, mimeType: fileMimeType, provider: page.provider })
+                            break
+                        default:
+                            /*
+                            Sailfish Office fails for none pdf files. Needs more investigation.
+                            */
+                            imageNotification.show(qsTr("Only PDF is supported"));
+                            break
+                        }
+                    }
+                    else {
+                        py.download(fileId, md5Checksum)
+                        page.update()
+                    }
+                }
+            }
+
+         Component.onCompleted: {
+            py.checkPath(filePath, md5Checksum)
+         }
+
         }
 
         Column {
@@ -117,6 +194,11 @@ Page {
                     value: fileId
                 }
                 DetailItem {
+                    id: _md5CheckSum
+                    label: qsTr("Checksum")
+                    value: md5Checksum ? md5Checksum : _md5CheckSum.visible = false
+                }
+                DetailItem {
                     id: _fileDescription
                     label: qsTr("Descpriction")
                     value: fileDescription ? fileDescription : _fileDescription.visible = false
@@ -161,16 +243,30 @@ Page {
             setHandler('download_status', function (res) {
                 if (res === 100) {
                     imageNotification.show(qsTr("Download Complete!"));
-                } else {
+                }
+                else if (res === 110) {
+                    imageNotification.show(qsTr("File Already Exists"));
+                }
+                else {
                     imageNotification.show(qsTr("Download Failed!"));
                 }
+            })
+            setHandler('downloadCondition', function (logic) {
+                downloadCondition = logic
+            })
+            setHandler('path', function (logic) {
+                fileExistsStep = logic
             })
             importModule('main', function () {})
         }
 
 
-        function download(id) {
-            call('main.api.download', [id], function () {})
+        function download(id, md5Checksum) {
+            call('main.api.download', [id, md5Checksum], function () {})
+        }
+
+        function checkPath(filePath, md5Checksum) {
+            call('main.api.checkPath', [filePath, md5Checksum], function () {})
         }
     }
 }

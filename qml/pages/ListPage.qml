@@ -255,8 +255,10 @@ Page {
             }
 
 
-            onClicked: Functions.dir(
-                           model.mimeType) ? Functions.pushPageDir(100,
+            onClicked: {
+                var filePath =  '/home/nemo/Downloads/Cargo/' + id + "." + name.split(".")[1]
+                Functions.dir(
+                           model.mimeType) ? Functions.pushPageDir(150,
                                                                    "'" + model.id + "' in parents", model.name) : Functions.pushPageFile(
                                                  model.id, model.name,
                                                  model.description, model.size,
@@ -266,14 +268,17 @@ Page {
                                                  model.thumbnailLink,
                                                  model.shared,
                                                  model.sharedWithMeTime,
-                                                 model.ownedByMe)
+                                                 model.ownedByMe,
+                                                 model.md5Checksum,
+                                                 filePath)
+            }
 
             menu: ContextMenu {
                 MenuItem {
                     text: qsTr('Download')
                 }
                 onClicked: {
-                    py.download(id)
+                    py.download(id, md5Checksum)
                 }
             }
         }
@@ -305,7 +310,11 @@ Page {
             setHandler('download_status', function (res) {
                 if (res === 100) {
                     imageNotification.show(qsTr("Download Complete!"));
-                } else {
+                }
+                else if (res === 110) {
+                    imageNotification.show(qsTr("File Already Exists"));
+                }
+                else {
                     imageNotification.show(qsTr("Download Failed!"));
                 }
             })
@@ -336,8 +345,8 @@ Page {
             })
         }
 
-        function download(id) {
-            call('main.api.download', [id], function () {})
+        function download(id, md5Checksum) {
+            call('main.api.download', [id, md5Checksum], function () {})
         }
 
         function configParser(configName) {

@@ -39,14 +39,14 @@
                           fileCreatedTime, fileWebViewLink,
                           fileIconLink, fileHasThumbnail,
                           fileThumbnailLink, fileShared,
-                          fileSharedWithMeTime, fileOwnedByMe){
+                          fileSharedWithMeTime, fileOwnedByMe, md5Checksum, filePath){
         pageStack.push('../pages/InfoPage.qml', {fileId: fileId, fileName: fileName,
                                          fileDescription: fileDescription, fileSize: fileSize,
                                         fileModifiedTime: fileModifiedTime, fileMimeType: fileMimeType,
                                         fileCreatedTime: fileCreatedTime, fileWebViewLink: fileWebViewLink,
                                         fileIconLink: fileIconLink, fileHasThumbnail: fileHasThumbnail,
                                         fileThumbnailLink: fileThumbnailLink, fileShared: fileShared,
-                                        fileSharedWithMeTime: fileSharedWithMeTime, fileOwnedByMe: fileOwnedByMe})
+                                        fileSharedWithMeTime: fileSharedWithMeTime, fileOwnedByMe: fileOwnedByMe, md5Checksum: md5Checksum, filePath: filePath})
 
 
     }

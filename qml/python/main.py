@@ -13,6 +13,7 @@ import shutil
 from googleapiclient.http import MediaIoBaseDownload
 import re
 import header
+import hashlib
 
 
 socket.setdefaulttimeout = 5
@@ -279,7 +280,7 @@ class Operations:
         pyotherside.send('setIcon', str(self.configParser('iconSet')))
         return items
 
-    def download(self, id):
+    def download(self, id, md5Checksum):
 
         '''
             id: document id
@@ -306,23 +307,63 @@ class Operations:
             request = self.service.files().export_media(fileId=id,
                                              mimeType=downloadMimeType)
         else:
-            fileFormat = '' #mimeTypeFromGoogle.split('/')[1]
+            if '.' in fileName:
+                fileFormat = ''
+            try:
+                fileFormat = file['name'].split('.')[1] #mimeTypeFromGoogle.split('/')[1]
+            except:
+                fileFormat = ''
             request = self.service.files().get_media(fileId=id)
 
-        fh = io.BytesIO()
-        downloader = MediaIoBaseDownload(fh, request)
-        done = False
-        while done is False:
-            status, done = downloader.next_chunk()
-            pyotherside.send('download_status', int(status.progress() * 100))
-        fh.seek(0)
+        # if self.isAscii(fileName):
+        #     file_name = self.download_path + u''.join(fileName) + fileFormat
+        #     downloadCondition = self.checkPath(file_name, md5Checksum)
+        
+        file_name = self.download_path + id  + '.' + fileFormat
+        downloadCondition = self.checkPath(file_name, md5Checksum)
+        
+        if downloadCondition:
+            pyotherside.send('downloadCondition', True)
+            fh = io.BytesIO()
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while done is False:
+                status, done = downloader.next_chunk()
+                pyotherside.send('download_status', int(status.progress() * 100))
+                pyotherside.send('path', str(file_name))
+            fh.seek(0)
 
-        if self.isAscii(fileName):
-            file_name = self.download_path + u''.join(fileName) + fileFormat
+            with open(file_name, 'wb') as f:
+                shutil.copyfileobj(fh, f, length=131072)
         else:
-            file_name = self.download_path + id + '.' + fileFormat
-        with open(file_name, 'wb') as f:
-            shutil.copyfileobj(fh, f, length=131072)
+            pyotherside.send('downloadCondition', False)
+            pyotherside.send('download_status', 110)
+
+    def checkPath(self, filePath, md5Checksum):
+
+        '''
+            checks if the file exists, and matches checksums
+
+            return True to Download
+            return False to Pass
+
+        '''
+
+        if os.path.exists(filePath):
+            print("Found File")
+            if hashlib.md5(open(filePath,'rb').read()).hexdigest() == md5Checksum:
+                print("md5 Checks")
+                print(filePath)
+                pyotherside.send('path', True)
+                return False
+            else:
+                print("md5 false")
+                pyotherside.send('path', False)
+                return True
+        else:
+            print("Need to download")
+            pyotherside.send('path', False)
+            return True
 
     def commonMimeType(self, mimeType):
         #I am sure there is a lib for this, until then...manual!
