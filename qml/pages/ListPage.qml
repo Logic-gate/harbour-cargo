@@ -274,12 +274,21 @@ Page {
             }
 
             menu: ContextMenu {
+
                 MenuItem {
                     text: qsTr('Download')
+                    onClicked: {
+                        py.download(id, md5Checksum, false)
+                    }
                 }
-                onClicked: {
-                    py.download(id, md5Checksum)
+
+                MenuItem {
+                    text: qsTr('Download as PDF')
+                    onClicked: {
+                        py.download(id, md5Checksum, true)
+                    }
                 }
+
             }
         }
 
@@ -345,8 +354,8 @@ Page {
             })
         }
 
-        function download(id, md5Checksum) {
-            call('main.api.download', [id, md5Checksum], function () {})
+        function download(id, md5Checksum, asPdf) {
+            call('main.api.download', [id, md5Checksum, asPdf], function () {})
         }
 
         function configParser(configName) {

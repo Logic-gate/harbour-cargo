@@ -88,7 +88,15 @@ Page {
                 */
                 text: exportOrDownload ? qsTr("Export") : qsTr("Download")
                 onClicked: {
-                    py.download(fileId, md5Checksum)
+                    py.download(fileId, md5Checksum, false)
+                }
+            }
+
+            MenuItem {
+
+                    text: qsTr("Download as PDF")
+                onClicked: {
+                    py.download(fileId, md5Checksum, true)
                 }
             }
 
@@ -261,12 +269,13 @@ Page {
         }
 
 
-        function download(id, md5Checksum) {
-            call('main.api.download', [id, md5Checksum], function () {})
+        function download(id, md5Checksum, asPdf) {
+            call('main.api.download', [id, md5Checksum, asPdf], function () {})
         }
 
         function checkPath(filePath, md5Checksum) {
             call('main.api.checkPath', [filePath, md5Checksum], function () {})
+
         }
     }
 }
