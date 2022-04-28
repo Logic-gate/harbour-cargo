@@ -14,6 +14,7 @@ from googleapiclient.http import MediaIoBaseDownload
 import re
 import header
 import hashlib
+import mimetypes
 
 
 socket.setdefaulttimeout = 5
@@ -165,7 +166,7 @@ class Operations:
             else:
                 '''
                 pathChecks is done here, this will only run at first launch
-                after checking, we set the defaults values programmatically.
+                after checking, we set the default values programmatically.
                 '''
                 self.pathChecks([self.config, self.download_path])
                 self.createConfigBody()
@@ -304,22 +305,31 @@ class Operations:
         if mimeTypeFromGoogle in self.google_mime_types_convert:
             downloadMimeType, fileFormat= self.commonMimeType(mimeTypeFromGoogle)
             print('found file')
+            print(downloadMimeType, fileFormat)
             request = self.service.files().export_media(fileId=id,
                                              mimeType=downloadMimeType)
         else:
             if '.' in fileName:
                 fileFormat = ''
-            try:
-                fileFormat = file['name'].split('.')[1] #mimeTypeFromGoogle.split('/')[1]
-            except:
-                fileFormat = ''
+                print('No extention')
+            else:
+                fileFormat = mimetypes.guess_extension(mimeTypeFromGoogle)
+                print('No ext::from mimeTypes')
+#            try:
+#                fileFormat = file['name'].split('.')[1] #mimeTypeFromGoogle.split('/')[1]
+#                print('extention:')
+#                print(fileFormat)
+#            except:
+#                fileFormat = ''
             request = self.service.files().get_media(fileId=id)
 
         # if self.isAscii(fileName):
         #     file_name = self.download_path + u''.join(fileName) + fileFormat
         #     downloadCondition = self.checkPath(file_name, md5Checksum)
         
-        file_name = self.download_path + id  + '.' + fileFormat
+        #file_name = self.download_path + id  + '.' + fileFormat
+        file_name = self.download_path + fileName + fileFormat
+        print(file_name)
         downloadCondition = self.checkPath(file_name, md5Checksum)
         
         if downloadCondition:
@@ -362,6 +372,7 @@ class Operations:
                 return True
         else:
             print("Need to download")
+            print(filePath)
             pyotherside.send('path', False)
             return True
 

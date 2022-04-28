@@ -5,3 +5,7 @@ Icon=harbour-cargo
 Exec=sailfish-qml harbour-cargo
 Name=Cargo
 
+[X-Sailjail]
+Permissions=Documents;Downloads;Internet;Pictures;PublicDir
+OrganizationName=tc.ki
+ApplicationName=cargo

@@ -20,7 +20,7 @@ res.files = res
 res.path = /usr/share/$${TARGET}
 
 token.files = token
-token.path = /home/nemo/.config/$${TARGET}
+token.path = /home/defaultuser/.config/$${TARGET}
 
 
 

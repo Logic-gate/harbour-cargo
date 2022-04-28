@@ -47,7 +47,7 @@ Page {
             }
 
             Label {
-                text: "Cargo 1.0.3"
+                text: "Cargo 1.1-4"
                 font.pixelSize: Theme.fontSizeExtraLarge
                 anchors.horizontalCenter: parent.horizontalCenter
                 wrapMode: Text.WordWrap

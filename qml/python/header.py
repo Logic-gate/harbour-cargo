@@ -1,11 +1,13 @@
 import os
 
+HOME = os.environ['HOME']
+
 MAIN_PATH = '/usr/share/harbour-cargo/qml/creds/'
-CONFIG_PATH = '/home/nemo/.config/harbour-cargo/'
+CONFIG_PATH = HOME + '/.config/harbour-cargo/'
 TOKEN_FILE = 'token.pickle'
 CLIENT_ID_FILE = 'client_id.json'
 CONFIG_FILE = 'config'
-DOWNLOAD_PATH = '/home/nemo/Downloads/Cargo/'
+DOWNLOAD_PATH = HOME + '/Downloads/Cargo/'
 
 DEFAULT_CONFIG = "iconSet=[silicaIconSet]\npageSize=[25]"
 
@@ -24,9 +26,9 @@ SERVICE_SEARCH_FIELDS = "nextPageToken, files(*)"
 
 
 GOOGLE_MIME_TYPES_CONVERT = {'application/vnd.google-apps.spreadsheet': 
-        	('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.xlsx'),
+                ('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.xlsx'),
        	'application/vnd.google-apps.document': 
-        	('application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.docx'),
+                ('application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.docx'),
         'application/vnd.google-apps.presentation':
             ('application/pdf', '.pdf')
         }

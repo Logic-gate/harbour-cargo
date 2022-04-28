@@ -4,6 +4,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import io.thp.pyotherside 1.4
+import Sailfish.Share 1.0
 
 import "../python"
 import "../components"
@@ -103,19 +104,28 @@ Page {
             MenuItem {
                 text: qsTr("Share")
                 visible: fileExistsStep && md5Checksum ? true : false
+                ShareAction {
+                     id: share
+                     mimeType: fileMimeType
+                     resources: [filePath]
+                     title: fileName
+                 }
+
                 onClicked: {
-                        pageStack.animatorPush("Sailfish.TransferEngine.SharePage",
-                                {
-                                "source": filePath,
-                                "mimeType": fileMimeType
-                                 })
+                    share.trigger()
+//                        pageStack.animatorPush("Sailfish.TransferEngine.ShareFilePreview",
+//                                {
+//                                "source": filePath,
+//                                "mimeType": fileMimeType
+//                                 })
                     }
             }
         }
 
         PushUpMenu {
             id: pushUpMenuInfoPage
-            visible: md5Checksum && fileMimeType === 'application/pdf' ? true : false
+            visible: md5Checksum ? true : false
+//            visible: md5Checksum && fileMimeType === 'application/pdf' ? true : false
             MenuItem {
                 id: openInOffice
                 text: fileExistsStep ? qsTr("Open") : qsTr("Download")
@@ -126,14 +136,28 @@ Page {
                             This will allow us to open pdf files from cargo
                             */
                         case "application/pdf":
-                            pageStack.animatorPush("Sailfish.Office.PDFDocumentPage",
+                            Qt.openUrlExternally(filePath)
+
+                          /*  pageStack.animatorPush("Sailfish.Office.PDFDocumentPage",
                                                    { title: fileName, source: filePath, mimeType: fileMimeType, provider: page.provider })
+                                                   */
                             break
+//                        case "application/vnd.ms-excel":
+//                        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+//                        case "application/vnd.oasis.opendocument.spreadsheet":
+//                        case "application/vnd.google-apps.spreadsheet":
+//                          pageStack.animatorPush("Sailfish.Office.SpreadsheetPage",
+//                                                     { title: fileName, source: filePath, mimeType: fileMimeType, provider: page.provider })
+
+//                            break
                         default:
                             /*
                             Sailfish Office fails for none pdf files. Needs more investigation.
                             */
-                            imageNotification.show(qsTr("Only PDF is supported"));
+                             Qt.openUrlExternally(filePath)
+//                            imageNotification.show(qsTr("Only PDF is supported"));
+
+
                             break
                         }
                     }
@@ -242,10 +266,10 @@ Page {
             addImportPath(Qt.resolvedUrl('../python'))
             setHandler('download_status', function (res) {
                 if (res === 100) {
-                    imageNotification.show(qsTr("Download Complete!"));
+                    imageNotification.show(qsTr("Download Complete!\n" + filePath));
                 }
                 else if (res === 110) {
-                    imageNotification.show(qsTr("File Already Exists"));
+                    imageNotification.show(qsTr("File Already Exists\n" + filePath));
                 }
                 else {
                     imageNotification.show(qsTr("Download Failed!"));

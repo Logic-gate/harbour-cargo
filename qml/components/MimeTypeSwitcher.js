@@ -16,30 +16,30 @@ function mimeTypeIcon(mimeType, colorScheme) {
         icon = "image://theme/icon-m-file-video"
         break
     default:
-        icon = "image://theme/icon-m-file-document-light"
+        icon = "image://theme/icon-m-file-document-dark"
     }
 
     switch (mimeType) {
     case "application/pdf":
-        icon = "image://theme/icon-m-file-pdf-light"
+        icon = "image://theme/icon-m-file-pdf-dark"
         break
     case "application/vnd.ms-excel":
     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
     case "application/vnd.oasis.opendocument.spreadsheet":
     case "application/vnd.google-apps.spreadsheet":
-        icon = "image://theme/icon-m-file-spreadsheet-light"
+        icon = "image://theme/icon-m-file-spreadsheet-dark"
         break
     case "application/vnd.ms-powerpoint":
     case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
     case "application/vnd.oasis.opendocument.presentation":
     case "application/vnd.google-apps.presentation":
-        icon = "image://theme/icon-m-file-presentation-light"
+        icon = "image://theme/icon-m-file-presentation-dark"
         break
     case "application/msword":
     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
     case "application/vnd.oasis.opendocument.text":
     case "application/vnd.google-apps.document":
-        icon = "image://theme/icon-m-file-formatted-light"
+        icon = "image://theme/icon-m-file-formatted-dark"
         break
     case "application/x-rar-compressed":
     case "application/zip":
@@ -61,7 +61,7 @@ function mimeTypeIcon(mimeType, colorScheme) {
     }
 
     if (colorScheme){
-        return icon.replace('-light', '-dark')
+        return icon.replace('-dark', '-light')
     }
     else {
         return icon

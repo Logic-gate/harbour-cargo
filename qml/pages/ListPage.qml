@@ -256,7 +256,7 @@ Page {
 
 
             onClicked: {
-                var filePath =  '/home/nemo/Downloads/Cargo/' + id + "." + name.split(".")[1]
+                var filePath =  '/home/defaultuser/Downloads/Cargo/' + name /*+ "." + name.split(".")[1]*/
                 Functions.dir(
                            model.mimeType) ? Functions.pushPageDir(150,
                                                                    "'" + model.id + "' in parents", model.name) : Functions.pushPageFile(

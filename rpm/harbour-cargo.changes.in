@@ -8,8 +8,13 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
-* Sun Apr 13 2014 Jack Tar <jack.tar@example.com> 0.0.1-1
-- Scrubbed the deck
-- Hoisted the sails
+* Wed Apr 27 2022 Logic-gate <mad_dev@linuxmail.org> 1.1-4
+- Fixed Hardcod nemo
+- Fixed download name and path issue; was showing id rather than name
+- Added Sailjail Profile
+- Added Share for non-google-mimetype files
+- Added Open non-google-mimetype files direclty from cargo
+- Added new icons
+- Fixed ColorScheme switch from dark to light depending on ambience
 
 
