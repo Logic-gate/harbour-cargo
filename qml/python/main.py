@@ -281,10 +281,12 @@ class Operations:
         pyotherside.send('setIcon', str(self.configParser('iconSet')))
         return items
 
-    def download(self, id, md5Checksum):
+    def download(self, id, md5Checksum, asPdf):
 
         '''
             id: document id
+
+            asPdf: ignore mimetype and choose PDF instead
 
             return: file --> header.DOWNLOAD_PATH
 
@@ -302,7 +304,11 @@ class Operations:
         print(mimeTypeFromGoogle)
 
         
-        if mimeTypeFromGoogle in self.google_mime_types_convert:
+        if asPdf:
+            fileFormat= ".pdf"
+            request = self.service.files().export_media(fileId=id,
+                                             mimeType="application/pdf")
+        elif mimeTypeFromGoogle in self.google_mime_types_convert:
             downloadMimeType, fileFormat= self.commonMimeType(mimeTypeFromGoogle)
             print('found file')
             print(downloadMimeType, fileFormat)
