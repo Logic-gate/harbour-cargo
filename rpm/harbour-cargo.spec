@@ -17,6 +17,7 @@ Version:    1.1
 Release:    4
 Group:      Qt/Qt
 License:    LICENSE
+BuildArch:  noarch
 URL:        https://github.com/Logic-gate/harbour-cargo
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-cargo.yaml
