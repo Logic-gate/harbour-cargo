@@ -12,6 +12,7 @@ Page {
     property var currentIconSet
     property var currentIcon
     property var configBoolean
+    property var applyPatchBoolean
 
     SilicaFlickable {
         id: settingsContainer
@@ -39,6 +40,16 @@ Page {
                 onCheckedChanged: {
                     py.configBooleanIconChange(iconSet.checked)
                 }
+            }
+
+            TextSwitch {
+                id: applyPatch
+                text: qsTr("Add A Gallery Folder For Drive! Image Downloads")
+                description: qsTr("This will apply a patch to Jolla Gallery that will display an aditional Gallery folder for Drive!")
+                checked: false
+//                onCheckedChanged: {
+//                    py.applyPatch(applyPatch.checked)
+//                }
             }
 
             TextSwitch {
@@ -75,11 +86,19 @@ Page {
                     iconSet.checked = option
             })
 
+            setHandler('applyPatchBoolean', function (option) {
+                    applyPatch.checked = option
+            })
+
             setHandler('currentConfig', function (option) {
                     currentIcon = option
             })
 
             importModule('main', function () {})
+        }
+
+        function applyPatch(checked) {
+            call('main.api.applyPatch', [checked], function () {})
         }
 
         function configBooleanIconChange(checked) {
