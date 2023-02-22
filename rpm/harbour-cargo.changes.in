@@ -8,6 +8,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Wed Feb 22 2023 Logic-gate <amer@live.ca> 1.1-5
+- Fixed OOB dep by by adding login method for token extraction
+- Attah added save as PDF
+
 * Wed Apr 27 2022 Logic-gate <mad_dev@linuxmail.org> 1.1-4
 - Fixed Hardcod nemo
 - Fixed download name and path issue; was showing id rather than name
