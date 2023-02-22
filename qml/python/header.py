@@ -8,7 +8,9 @@ TOKEN_FILE = 'token.pickle'
 CLIENT_ID_FILE = 'client_id.json'
 CONFIG_FILE = 'config'
 DOWNLOAD_PATH = HOME + '/Downloads/Cargo/'
-
+HOST = 'localhost'
+PORT = 8098
+SUCCESS_MESSAGE = 'You can close this page now!...'
 DEFAULT_CONFIG = "iconSet=[silicaIconSet]\npageSize=[25]"
 
 SCOPES = [

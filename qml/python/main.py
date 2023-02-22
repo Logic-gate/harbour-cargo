@@ -2,7 +2,7 @@
 from __future__ import print_function
 import pickle
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import Flow
+from google_auth_oauthlib.flow import Flow, InstalledAppFlow, _RedirectWSGIApp, wsgiref, _WSGIRequestHandler
 from google.auth.transport.requests import Request
 import pyotherside
 import os
@@ -50,6 +50,9 @@ class Operations:
         self.defualt_config = header.DEFAULT_CONFIG
         self.service_search_fields = header.SERVICE_SEARCH_FIELDS
         self.google_mime_types_convert = header.GOOGLE_MIME_TYPES_CONVERT
+        self.host = header.HOST
+        self.port = header.PORT
+        self.success_message = header.SUCCESS_MESSAGE
 
     def pathChecks(self, path):
 
@@ -172,16 +175,46 @@ class Operations:
                 self.createConfigBody()
 
                 flow = Flow.from_client_secrets_file(self.client_id,
-                        header.SCOPES, redirect_uri='urn:ietf:wg:oauth:2.0:oob'
-                        )
+                        header.SCOPES)
                 self.flow = flow
+                '''
+                   Instead of using InstalledAppFlow, we can go through the
+                   process that InstalledAppFlow goes through to pass the url
+                   to qml side.
 
-                (auth_url, _) = flow.authorization_url(prompt='consent')
+                   TODO: Handle offline case where server hanges.
+                         Process needs to be killed by pid(sailfish-qml harbour-cargo)
+                '''
+                wsgi_app = _RedirectWSGIApp(self.success_message)
+                local_server = wsgiref.simple_server.make_server(self.host,
+                                                                self.port,
+                                                                wsgi_app,
+                                                                handler_class=_WSGIRequestHandler)
+                self.flow.redirect_uri = "http://{}:{}/".format(self.host, local_server.server_port)
+
+                auth_url, state = self.flow.authorization_url(access_type='offline')
+
+                #print(auth_url)
 
                 pyotherside.send('authUrl', str(auth_url))
+                local_server.handle_request()
+                wsgi_app.last_request_uri.replace("http", "https")
+                authorization_response = wsgi_app.last_request_uri.replace("http", "https")
+
+                '''
+                We dont need
+                Button {
+                    id: processCode
+                    text: qsTr("Process Code") ...
+
+                anymore. Once authenticated, we can build the service here.
+
+                TODO: Remove Button id: processCode in FirstPage.qml
+                '''
+                self.processToken(authorization_response)
 
     def credentialsCheckToken(self):
-
+        print('credentialsCheckToken::starting')
         if os.path.exists(self.token):
             pyotherside.send('code', 1)
             print('credentialsCheck::tokenFound::%s' % self.token)
@@ -200,7 +233,7 @@ class Operations:
             if self.creds and self.creds.expired and self.creds.refresh_token:
                 self.creds.refresh(Request())
             else:
-                self.flow.fetch_token(code=code)
+                self.flow.fetch_token(authorization_response=code)
                 self.creds = self.flow.credentials
             with open(self.token, 'wb') as token:
                 print('processToken::pickle::dump::%s' % self.token)
