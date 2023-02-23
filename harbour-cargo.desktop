@@ -6,6 +6,6 @@ Exec=sailfish-qml harbour-cargo
 Name=Cargo
 
 [X-Sailjail]
-Permissions=Documents;Downloads;Internet;Pictures;PublicDir
+Permissions=Documents;Downloads;Internet;Pictures;PublicDir;RemovableMedia;UserDirs
 OrganizationName=tc.ki
 ApplicationName=cargo
