@@ -14,7 +14,7 @@ Name:       harbour-cargo
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    A Google Drive Client
 Version:    1.1
-Release:    5
+Release:    6
 Group:      Qt/Qt
 License:    LICENSE
 BuildArch:  noarch

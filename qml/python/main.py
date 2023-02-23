@@ -4,6 +4,8 @@ import pickle
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import Flow, _RedirectWSGIApp, wsgiref, _WSGIRequestHandler
 from google.auth.transport.requests import Request
+from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaFileUpload
 import pyotherside
 import os
 import httplib2
@@ -15,6 +17,7 @@ import re
 import header
 import hashlib
 import mimetypes
+
 
 
 socket.setdefaulttimeout = 5
@@ -387,6 +390,39 @@ class Operations:
         else:
             pyotherside.send('downloadCondition', False)
             pyotherside.send('download_status', 110)
+
+    def upload(self, file, mimetype, fileName):
+        '''
+            file: file to be uploaded
+            mimetype: file mimetype
+
+            According to https://developers.google.com/drive/api/guides/manage-uploads#simple
+            there are 3 types of uploadTypes: media, multipart, and resumable.
+            We will upload witohut specifying which; default. This could be added later
+            if problems arise.
+
+            TODO: add Import to Google Docs types as an option
+                  add Drive Upload Location - get dir list first
+                  add better error handling; check cache.
+
+        '''
+
+        try:
+            file_metadata = {'name': fileName}
+            media = MediaFileUpload(file,
+                                     mimetype=mimetype)
+            file = self.service.files().create(body=file_metadata, media_body=media,
+                                              fields='id').execute()
+            print(F'uoload::File ID::{file.get("id")}::{file}')
+
+            pyotherside.send('upload_status', 110)
+
+        except HttpError as error:
+            pyotherside.send('upload_status', 111)
+            print(F'upload::error::{error}')
+            file = None
+
+#        return file.get('id')
 
     def checkPath(self, filePath, md5Checksum):
 

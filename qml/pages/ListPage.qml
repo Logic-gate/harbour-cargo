@@ -194,6 +194,14 @@ Page {
                     Functions.refresh()
                 }
             }
+
+            MenuItem {
+                id: upload
+                text: qsTr('Upload')
+                onClicked: {
+                    pageStack.push('LocalPicker.qml')
+                }
+            }
         }
 
         delegate: ListItem {

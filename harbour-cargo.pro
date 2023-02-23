@@ -43,6 +43,7 @@ DISTFILES += \
     qml/pages/About.qml \
     qml/pages/InfoPage.qml \
     qml/pages/ListPage.qml \
+    qml/pages/LocalPicker.qml \
     qml/pages/SettingsPage.qml \
     rpm/harbour-cargo.changes.in \
     rpm/harbour-cargo.spec \
