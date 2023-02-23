@@ -15,7 +15,6 @@ import re
 import header
 import hashlib
 import mimetypes
-import hashlib
 
 
 socket.setdefaulttimeout = 5
@@ -54,14 +53,6 @@ class Operations:
         self.host = header.HOST
         self.port = header.PORT
         self.success_message = header.SUCCESS_MESSAGE
-        self.gallery_path = header.JOLLA_GALLERY_PATH
-        self.gallery_qml_256 = header.GALLERY_QML_256
-        self.gallery_start_page_256 = header.GALLERY_START_PAGE_256
-        self.gallery_name = 'gallery'
-        self.gallery_start_page_name = 'GalleryStartPage'
-        self.qml_suffix = '.qml'
-        self.patch_suffix = '.patch'
-        self.patch_path = header.PATCH_PATH
 
     def pathChecks(self, path):
 
@@ -440,51 +431,6 @@ class Operations:
             return False
         else:
             return True
-
-    def checkSum(self, filename):
-
-        with open(filename, 'rb') as orig:
-            bytes = orig.read()
-            sha256sum = hashlib.sha256(bytes).hexdigest()
-            return sha256sum
-
-    def patchCommand(self, file, patch):
-
-        patch_command = "patch -u -b %s -i %s" %(file, self.patch_path + patch + self.patch_suffix)
-        print(patch_command)
-        return os.system(patch_command)
-
-    def applyPatch(self, checked):
-        '''
-        apply patches/ to header.gallery_path
-        gallery.qml and pages/GalleryStartPage.qml
-
-        This will add a Cargo! Photos section to Gallery
-
-        will checksum both files as of 4.5.0.18
-        '''
-
-        gallery = self.gallery_path + self.gallery_name + self.qml_suffix
-        gallery_start_page = self.gallery_path + 'pages/' + self.gallery_start_page_name + self.qml_suffix
-
-        if checked:
-            print(checked, 'applyingPatch')
-            if self.checkSum(gallery) == self.gallery_qml_256 and self.checkSum(gallery_start_page) == self.gallery_start_page_256:
-                self.patchCommand(gallery, self.gallery_name)
-                self.patchCommand(gallery_start_page, self.gallery_start_page_name)
-                pyotherside.send('applyPatch', True)
-                return True
-            else:
-                pass
-
-        else:
-            print(checked, 'revertingPatch')
-            pyotherside.send('applyPatch', False)
-#            patchCommand(self.gallery_name)
-#            patchCommand(self.gallery_start_page_name)
-            return False
-
-
 
 
 api = Operations()

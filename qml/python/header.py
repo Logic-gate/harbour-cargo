@@ -12,10 +12,6 @@ HOST = 'localhost'
 PORT = 8098
 SUCCESS_MESSAGE = 'You can close this page now!...'
 DEFAULT_CONFIG = "iconSet=[silicaIconSet]\npageSize=[25]"
-PATCH_PATH = "/usr/share//harbour-cargo/qml/python/patches/"
-JOLLA_GALLERY_PATH = '/usr/share/jolla-gallery/'
-GALLERY_QML_256 = '7ed28197af82d58d0fb3d4599db9ba08b15556efde7f8e4c85ac91304671997e'
-GALLERY_START_PAGE_256 = '83fac1158194a85917605d18fbb3a458677fb4e978615b3c4e85b097a0c79519'
 
 SCOPES = [
     'https://www.googleapis.com/auth/drive.metadata.readonly',
