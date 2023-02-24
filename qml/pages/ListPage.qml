@@ -41,7 +41,7 @@ Page {
 
     property bool searchEnabled
     property bool refreshAfterIconSet
-    property bool loaded: false
+    property bool loaded: false 
 
     Component.onCompleted: {
         if (dirPush) {
@@ -362,9 +362,14 @@ Page {
             })
         }
 
+        function setParent(parents) {
+            call('main.api.setParentID', [parents], function () {})
+        }
+
         function download(id, md5Checksum, asPdf) {
             call('main.api.download', [id, md5Checksum, asPdf], function () {})
         }
+
 
         function configParser(configName) {
             call('main.api.configParser', [configName], function () {})

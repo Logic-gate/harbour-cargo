@@ -10,6 +10,7 @@
 
 * Thus Feb 23 2023 Logic-gate <amer@live.ca> 1.1-6
 - Basic file upload
+- Upload to dir in view
 
 * Wed Feb 22 2023 Logic-gate <amer@live.ca> 1.1-5
 - Fixed OOB dep by by adding login method for token extraction

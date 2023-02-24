@@ -56,6 +56,7 @@ class Operations:
         self.host = header.HOST
         self.port = header.PORT
         self.success_message = header.SUCCESS_MESSAGE
+        self.parent = None
 
     def pathChecks(self, path):
 
@@ -274,7 +275,12 @@ class Operations:
         results = self.service.files().list(
             pageSize=int(count), fields=self.service_search_fields).execute()
         items = results.get('files', [])
+        # make sure parent is home...this will sometimes fail, needs a refresh. Think later
+        self.setParentID(None)
+        print(F'listFileService::currentParent::HOME')
+
         print('listFileService::resultsParse::items')
+
         pyotherside.send('iconParseSetting', self.configBooleanIconCheck())
         pyotherside.send('setIcon', str(self.configParser('iconSet')))
         return items
@@ -288,6 +294,12 @@ class Operations:
         items = results.get('files', [])
 
         return items
+
+    def setParentID(self, parentID):
+        '''
+            Sets the current parent
+        '''
+        self.parent = parentID
 
     def getFileService(self, id):
 
@@ -312,7 +324,15 @@ class Operations:
         results = self.service.files().list(
             pageSize=int(count), q=param, fields=self.service_search_fields).execute()
         items = results.get('files', [])
-        print('testFunction::resultsParse::items')
+        # get current parent, not ideal but what the heck;
+        try:
+            self.setParentID(items[0]['parents'])
+            print(F'searchListFileService::currentParent::{self.parent}')
+        except:
+            self.setParentID(None)
+            print(F'searchListFileService::currentParent::ERROR')
+        print('searchListFileService::resultsParse::items')
+
         pyotherside.send('iconParseSetting', self.configBooleanIconCheck())
         pyotherside.send('setIcon', str(self.configParser('iconSet')))
         return items
@@ -395,27 +415,45 @@ class Operations:
         '''
             file: file to be uploaded
             mimetype: file mimetype
+            fileName: Name of file
+            self.parent: current parent id
 
             According to https://developers.google.com/drive/api/guides/manage-uploads#simple
             there are 3 types of uploadTypes: media, multipart, and resumable.
-            We will upload witohut specifying which; default. This could be added later
-            if problems arise.
+            We will upload without specifying which; default. This could be added later
+            if problems arise...scratch that, using resumable...large uploads fails!!!
 
             TODO: add Import to Google Docs types as an option
                   add Drive Upload Location - get dir list first
                   add better error handling; check cache.
 
+            Zymaxid 11 feb, stop 2 weeks
+            nevanac 11 feb, stop 1 month
+            Pred forte 11 feb, 5 days every hour, 1st week every 6, then 8, 12, 24 1 month
+
+            DELETE LATER!!!!!!!
         '''
 
         try:
             file_metadata = {'name': fileName}
             media = MediaFileUpload(file,
-                                     mimetype=mimetype)
+                                     mimetype=mimetype,
+                                     resumable=True,
+                                     chunksize=-1)
+            if self.parent:
+                print(F'uoload::parents::{self.parent}')
+                file_metadata['parents'] = self.parent
+                print(file_metadata)
+
             file = self.service.files().create(body=file_metadata, media_body=media,
                                               fields='id').execute()
+            #The things I do to make things work...WOW!
+            self.setParentID(None)
             print(F'uoload::File ID::{file.get("id")}::{file}')
 
             pyotherside.send('upload_status', 110)
+
+
 
         except HttpError as error:
             pyotherside.send('upload_status', 111)
